@@ -73,7 +73,7 @@
 				<tr>
 					<td><img src="upload/<?php echo $row['image'] ?>" height="200"></td>
 					<td><?php echo $row['image'] ?></td>
-					<td><a href="download.php?id='<?php echo $row['image'] ?>'"><button class="btn-primary download_btn">Download</button></a></td>
+					<td><a href="download.php?id=<?php echo $row['id']; ?>"><button class="btn-primary download_btn">Download</button></a></td>
 				</tr>
 			<?php
 			}

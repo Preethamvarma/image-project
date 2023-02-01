@@ -115,7 +115,7 @@
 
     .image-container {
       display: grid;
-      grid-template-columns: auto auto auto;
+      grid-template-columns: auto auto auto auto;
       gap: 15px;
     }
 
@@ -171,7 +171,11 @@
       }
     }
 
-    @media only screen and (max-width: 1200px) {}
+    @media only screen and (max-width: 1200px) {
+      .image-container {
+        grid-template-columns: auto auto auto;
+      }
+    }
 
     @media only screen and (min-width: 1800px) {}
   </style>
@@ -253,9 +257,12 @@
     function searchImages() {
       const party_id = $("#party-dropdown").val();
       const leader_id = $("#leader-dropdown").val();
-      const image_name = $("#img_name").val();
+      const img_name = $("#img_name").val();
       const fdate = $("#fdate").val();
       const tdate = $("#tdate").val();
+
+      // console.log("===> data: ", party_id, leader_id, img_name, fdate, tdate);
+
       $.ajax({
         url: "./searchImages.php",
         type: "POST",
@@ -263,7 +270,7 @@
           search: true,
           party_id,
           leader_id,
-          image_name,
+          img_name,
           fdate,
           tdate
         },

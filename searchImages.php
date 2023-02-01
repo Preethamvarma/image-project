@@ -47,27 +47,25 @@ if (isset($_POST['search'])) {
     try {
         $res = mysqli_query($conn, $str);
 
-        if ($row = mysqli_fetch_array($res)) {
 ?>
-            <div class="image-container">
+        <div class="image-container">
 
-                <?php
+            <?php
 
-                while ($row = mysqli_fetch_array($res)) {
-                ?>
-                    <div class="card image-card">
-                        <img src="upload/<?php echo $row['image'] ?>" alt="image">
-                        <div class="image-details">
-                            <h5><?php echo $row['image'] ?></h5>
-                            <a href="download.php?id=<?php echo $row['id']; ?>"><button class="btn">Download</button></a>
-                        </div>
+            while ($row = mysqli_fetch_array($res)) {
+            ?>
+                <div class="card image-card">
+                    <img src="upload/<?php echo $row['image'] ?>" alt="image">
+                    <div class="image-details">
+                        <h5><?php echo $row['image'] ?></h5>
+                        <a href="download.php?id=<?php echo $row['id']; ?>"><button class="btn">Download</button></a>
                     </div>
-                <?php
-                }
-                ?>
-            </div>
+                </div>
+            <?php
+            }
+            ?>
+        </div>
 <?php
-        }
     } catch (\Throwable $th) {
         echo "<p class='error'>Atleast one input value is required!</p>";
     }

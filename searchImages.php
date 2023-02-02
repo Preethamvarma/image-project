@@ -9,15 +9,9 @@ if (isset($_POST['search'])) {
     $img_name = @$_POST['img_name'];
     $fdate = @$_POST['fdate'];
     $tdate = @$_POST['tdate'];
+    $skip = @$_POST['skip'] ?  @$_POST['skip'] : 0;
+    $limit = @$_POST['limit'] ? @$_POST['limit'] : 25;
 
-    // echo '<br />party_id: ' . $party_id;
-    // echo '<br />leader_id: ' . $leader_id;
-    // echo '<br />img name: ' . $img_name;
-    // echo '<br />fdate: ' . $fdate;
-    // echo '<br />tdate: ' . $tdate . '<br />';
-
-
-    // $res = mysqli_query($conn, "SELECT * FROM image WHERE ( party_id = $party_id OR leader_id = $leader_id ) OR ( date BETWEEN '$fdate' AND '$tdate' ) OR img_name = '$img_name'   ");
     $condition = '';
 
     if ($party_id)
@@ -38,37 +32,27 @@ if (isset($_POST['search'])) {
         else $condition = $condition . " img_name = '$img_name'";
     }
 
-    // echo "CONDITION: " . $condition;
+    $str = "SELECT *, (SELECT count(i.id) FROM image i where" . $condition . ") as rowsCount FROM image where" . $condition . "LIMIT " . $skip . " , " . $limit;
 
-    // $res = mysqli_query($conn, "SELECT * FROM image WHERE ( party_id = $party_id OR leader_id = $leader_id ) OR ( date BETWEEN '$fdate' AND '$tdate' ) OR img_name = '$img_name'   ");
-    $str = "SELECT * FROM image WHERE " . $condition;
-
-    // echo '<br />' . $str;
     try {
         $res = mysqli_query($conn, $str);
 
-?>
-        <div class="image-container">
+        $response["rowsCount"] = 0;
+        $response["data"] = [];
+        $counter = 0;
 
-            <?php
-
-            while ($row = mysqli_fetch_array($res)) {
-            ?>
-                <div class="card image-card">
-                    <img src="upload/<?php echo $row['image'] ?>" alt="image">
-                    <div class="image-details">
-                        <h5><?php echo $row['image'] ?></h5>
-                        <a href="download.php?id=<?php echo $row['id']; ?>"><button class="btn">Download</button></a>
-                    </div>
-                </div>
-            <?php
-            }
-            ?>
-        </div>
-<?php
+        while ($row = mysqli_fetch_array($res)) {
+            if ($counter === 0) $response["rowsCount"] = $row["rowsCount"];
+            $response["data"][$counter]["id"] = $row["id"];
+            $response["data"][$counter]["image"] = $row["image"];
+            $response["data"][$counter]["img_name"] = $row["img_name"];
+            $counter++;
+        }
+        $response["totalRecords"] = $counter;
+        echo json_encode($response);
     } catch (\Throwable $th) {
-        echo "<p class='error'>Atleast one input value is required!</p>";
+        echo null;
     }
 } else {
-    echo "<p class='error'>Invalid action!</p>";
+    echo null;
 }
